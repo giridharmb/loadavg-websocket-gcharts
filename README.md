@@ -54,12 +54,13 @@ If the number of CPU cores on the machine is 12, and load average in the last
 - 15 mins is : 3
 ```
 
-The the load average percentage (%) in the last
+Then the load average percentage (%) calculation in the last
 ```
 - 1 min is   : 8/12 * 100 => 66%
 - 5 mins is  : 6/12 * 100 => 50%
 - 15 mins is : 3/12 * 100 => 25%
 ```
+
 #### Load Average
 
 ![plot](./loadavg.jpg)
