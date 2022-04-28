@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>System Monitor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script>
+      let socket = {};
+      let json_data_from_websocket = {};
+      let eventData = {};
+      let data = {};
+      let chart = {};
+      let options = {};
+    </script>
+
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        data = google.visualization.arrayToDataTable([
+          ['Load %', 'Value'],
+          ['1 Min', 0],
+          ['5 Mins', 0],
+          ['15 Mins', 0]
+        ]);
+
+        options = {
+          width: 800, height: 240,
+          redFrom: 90, redTo: 100,
+          yellowFrom:75, yellowTo: 90,
+          minorTicks: 5
+        };
+
+        chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="chart_div" style="width: 800px; height: 240px;"></div>
+  </body>
+</html>
+
+<script>
+$(document).ready(function(){
+  socket = new WebSocket("ws://127.0.0.1:9000/ws");
+  console.log("Attempting Connection...");
+
+  socket.onopen = () => {
+    console.log("Successfully Connected");
+    socket.send("Hi From the Client!")
+  };
+
+  socket.onclose = event => {
+    console.log("Socket Closed Connection: ", event);
+    socket.send("Client Closed!");
+  };
+
+  socket.onerror = error => {
+    console.log("Socket Error: ", error);
+  };
+
+  socket.onmessage = function (event) {
+    // console.log(event.data);
+    eventData = event;
+
+    if (!("data" in event)) {
+      console.log("'data' is not present in event object");
+      return;
+    }
+
+    try {
+
+      json_data_from_websocket = JSON.parse(event.data);
+
+      var load_min1 = Math.round(json_data_from_websocket["min1_percent"]);
+      var load_min5 = Math.round(json_data_from_websocket["min5_percent"]);
+      var load_min15 = Math.round(json_data_from_websocket["min15_percent"]);
+
+      data.setValue(0, 1, load_min1);
+      chart.draw(data, options);
+
+      data.setValue(1, 1, load_min5);
+      chart.draw(data, options);
+
+      data.setValue(2, 1, load_min15);
+      chart.draw(data, options);
+
+
+    } catch(err) {
+      console.log("could not parse JSON (json_data_from_websocket) : " + err);
+    }
+  }
+});
+</script>
