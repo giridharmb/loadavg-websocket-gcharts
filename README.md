@@ -91,3 +91,42 @@ Hi From the Client!
 ```bash
 ./websocket_loadavg -static static  > /dev/null 2>&1
 ```
+
+#### Optional : How to shoot up the load avaerage ?
+
+> Make sure you have 'parallel' command installed on your machine
+
+Create a file called `parallel.txt` having the following contents:
+
+```bash
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+dd if=/dev/urandom of=/dev/null bs=1m count=1000000;
+```
+
+> If the number of `CPU cores` on your machine is `8` , then run this command
+
+```bash
+parallel -j 8 < parallel.txt
+```
